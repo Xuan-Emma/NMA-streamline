@@ -1,0 +1,444 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+/* Begin PBXFileReference section */
+		B0000000000000000000AC02 /* NMAStreamline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NMAStreamline.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFF77D3EEA0A45D08C38B8E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9C959D1F43A4C86A810CB7A /* NMAStreamlineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMAStreamlineApp.swift; sourceTree = "<group>"; };
+		E58922F0716D4FBA84A8007F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		82E0A947D0884D34ABA7F047 /* NMAProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMAProject.swift; sourceTree = "<group>"; };
+		D522A6AC2E8047F486FC0E14 /* Study.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Study.swift; sourceTree = "<group>"; };
+		5E029BD11EDC4647A0416AF6 /* Citation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Citation.swift; sourceTree = "<group>"; };
+		679F8EBC385F470EBF30D1C3 /* Outcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Outcome.swift; sourceTree = "<group>"; };
+		ED15CF87307744AF8E7A3DD2 /* ReviewerDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewerDecision.swift; sourceTree = "<group>"; };
+		18B4A74EB89B46FDA164A005 /* PICOCriteriaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PICOCriteriaData.swift; sourceTree = "<group>"; };
+		B738D2D731654D59895390DB /* RISParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RISParser.swift; sourceTree = "<group>"; };
+		D3843D7D64C347568922689E /* BibParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BibParser.swift; sourceTree = "<group>"; };
+		5D58332AD5C54F0AABEC3F7D /* PubMedXMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PubMedXMLParser.swift; sourceTree = "<group>"; };
+		8715AFA686134168BA93C9F0 /* DeduplicationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeduplicationEngine.swift; sourceTree = "<group>"; };
+		3BBBB42EF4C04C9CAEC65258 /* ImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportManager.swift; sourceTree = "<group>"; };
+		80E263D2D97A4E0DA6C2BD97 /* ScreeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningView.swift; sourceTree = "<group>"; };
+		DF72AC259EDA42C38E809356 /* ScreeningViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningViewModel.swift; sourceTree = "<group>"; };
+		18A440C7E3234AEDBCEF4653 /* ConflictResolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolutionView.swift; sourceTree = "<group>"; };
+		4CD2BD3ABDDD4B9B8250CF65 /* AIAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistant.swift; sourceTree = "<group>"; };
+		9DFA2F7E5A2145EA9E692F76 /* PRISMAFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRISMAFlowView.swift; sourceTree = "<group>"; };
+		18B89223F6464B3691E954DF /* NetworkGeometryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkGeometryView.swift; sourceTree = "<group>"; };
+		D043F60B66C047649D37F544 /* MergeWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeWorkspaceView.swift; sourceTree = "<group>"; };
+		8A22DB050BC749D08DFE7C3E /* StudyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyListView.swift; sourceTree = "<group>"; };
+		00522EBCAA494D5C949C085D /* StudyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyDetailView.swift; sourceTree = "<group>"; };
+		4CAEF5070F46404884E4782D /* ProjectSettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectSettingsViews.swift; sourceTree = "<group>"; };
+		02B428D290484B0EA149AC01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXBuildFile section */
+		543B89455A294F20A50FD7F4 /* NMAStreamlineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C959D1F43A4C86A810CB7A /* NMAStreamlineApp.swift */; };
+		B4A8E72A6EEE4C3D834EFFC2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58922F0716D4FBA84A8007F /* ContentView.swift */; };
+		E36A34D27B1143FF979BF2FC /* NMAProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E0A947D0884D34ABA7F047 /* NMAProject.swift */; };
+		16CFDB362219405B8CF99B3E /* Study.swift in Sources */ = {isa = PBXBuildFile; fileRef = D522A6AC2E8047F486FC0E14 /* Study.swift */; };
+		A17A5A12651B422DA23E02D7 /* Citation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E029BD11EDC4647A0416AF6 /* Citation.swift */; };
+		E917F428D7B44086909C3F39 /* Outcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679F8EBC385F470EBF30D1C3 /* Outcome.swift */; };
+		13BD0EF1E468424681A47A93 /* ReviewerDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED15CF87307744AF8E7A3DD2 /* ReviewerDecision.swift */; };
+		A423F4D4877C4B6BA5F3E682 /* PICOCriteriaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A74EB89B46FDA164A005 /* PICOCriteriaData.swift */; };
+		4730D7205261499A9DF5737F /* RISParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738D2D731654D59895390DB /* RISParser.swift */; };
+		DE41B200B3AE4D38968F50BF /* BibParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3843D7D64C347568922689E /* BibParser.swift */; };
+		2C7BD4AABD714CBC8A6546CD /* PubMedXMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58332AD5C54F0AABEC3F7D /* PubMedXMLParser.swift */; };
+		DE69251AE48240098B310283 /* DeduplicationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8715AFA686134168BA93C9F0 /* DeduplicationEngine.swift */; };
+		5F32C614303D4C5FBE800F38 /* ImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBBB42EF4C04C9CAEC65258 /* ImportManager.swift */; };
+		C7160A4619794E2195CCF175 /* ScreeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E263D2D97A4E0DA6C2BD97 /* ScreeningView.swift */; };
+		E8849EF11F9B4CD8985D3886 /* ScreeningViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF72AC259EDA42C38E809356 /* ScreeningViewModel.swift */; };
+		203AE93EF3934210810D337F /* ConflictResolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A440C7E3234AEDBCEF4653 /* ConflictResolutionView.swift */; };
+		27D6367156EC4FAEBBA479FC /* AIAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD2BD3ABDDD4B9B8250CF65 /* AIAssistant.swift */; };
+		C4437FAE9FD84B00963F8714 /* PRISMAFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DFA2F7E5A2145EA9E692F76 /* PRISMAFlowView.swift */; };
+		9107EA8657D04984939C7AFF /* NetworkGeometryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B89223F6464B3691E954DF /* NetworkGeometryView.swift */; };
+		31B2F9590B0B44159F44A184 /* MergeWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D043F60B66C047649D37F544 /* MergeWorkspaceView.swift */; };
+		F60ECF3A50B84077BB93137A /* StudyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A22DB050BC749D08DFE7C3E /* StudyListView.swift */; };
+		8B46BBD486C548E09A65AD24 /* StudyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00522EBCAA494D5C949C085D /* StudyDetailView.swift */; };
+		742EA01EE5F74443A50B732F /* ProjectSettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAEF5070F46404884E4782D /* ProjectSettingsViews.swift */; };
+		9DB99A0E0C6D452586D36A51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02B428D290484B0EA149AC01 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXGroup section */
+		B0000000000000000000AC00 = {
+			isa = PBXGroup;
+			children = (
+				B0000000000000000000AC01,
+				CFF77D3EEA0A45D08C38B8E6,
+				F9C959D1F43A4C86A810CB7A,
+				E58922F0716D4FBA84A8007F,
+				075392D5F5C0400FB5B5508C,
+				1F7AB2F225EB41B7B4D932A9,
+				8D4D1B15BBCA4ADB87727E52,
+				AD732079E08D4C2681305B69,
+				120322DC1F2F4D729C6FE349,
+				E1DEF05B9A1543E7934A07B9,
+				D4ABE5293FF1459192E0B1BB,
+				188F12571DA941A2A4AD6B4D,
+				02B428D290484B0EA149AC01,
+			);
+			path = NMAStreamline;
+			sourceTree = "<group>";
+		};
+		B0000000000000000000AC01 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0000000000000000000AC02 /* NMAStreamline.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		075392D5F5C0400FB5B5508C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				82E0A947D0884D34ABA7F047,
+				D522A6AC2E8047F486FC0E14,
+				5E029BD11EDC4647A0416AF6,
+				679F8EBC385F470EBF30D1C3,
+				ED15CF87307744AF8E7A3DD2,
+				18B4A74EB89B46FDA164A005,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1F7AB2F225EB41B7B4D932A9 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				B738D2D731654D59895390DB,
+				D3843D7D64C347568922689E,
+				5D58332AD5C54F0AABEC3F7D,
+				8715AFA686134168BA93C9F0,
+				3BBBB42EF4C04C9CAEC65258,
+			);
+			path = Import;
+			sourceTree = "<group>";
+		};
+		8D4D1B15BBCA4ADB87727E52 /* Screening */ = {
+			isa = PBXGroup;
+			children = (
+				80E263D2D97A4E0DA6C2BD97,
+				DF72AC259EDA42C38E809356,
+				18A440C7E3234AEDBCEF4653,
+			);
+			path = Screening;
+			sourceTree = "<group>";
+		};
+		AD732079E08D4C2681305B69 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				4CD2BD3ABDDD4B9B8250CF65,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		120322DC1F2F4D729C6FE349 /* PRISMA */ = {
+			isa = PBXGroup;
+			children = (
+				9DFA2F7E5A2145EA9E692F76,
+			);
+			path = PRISMA;
+			sourceTree = "<group>";
+		};
+		E1DEF05B9A1543E7934A07B9 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				18B89223F6464B3691E954DF,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		D4ABE5293FF1459192E0B1BB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D043F60B66C047649D37F544,
+				8A22DB050BC749D08DFE7C3E,
+				00522EBCAA494D5C949C085D,
+				4CAEF5070F46404884E4782D,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		188F12571DA941A2A4AD6B4D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B0000000000000000000AADD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				543B89455A294F20A50FD7F4 /* NMAStreamlineApp.swift in Sources */,
+				B4A8E72A6EEE4C3D834EFFC2 /* ContentView.swift in Sources */,
+				E36A34D27B1143FF979BF2FC /* NMAProject.swift in Sources */,
+				16CFDB362219405B8CF99B3E /* Study.swift in Sources */,
+				A17A5A12651B422DA23E02D7 /* Citation.swift in Sources */,
+				E917F428D7B44086909C3F39 /* Outcome.swift in Sources */,
+				13BD0EF1E468424681A47A93 /* ReviewerDecision.swift in Sources */,
+				A423F4D4877C4B6BA5F3E682 /* PICOCriteriaData.swift in Sources */,
+				4730D7205261499A9DF5737F /* RISParser.swift in Sources */,
+				DE41B200B3AE4D38968F50BF /* BibParser.swift in Sources */,
+				2C7BD4AABD714CBC8A6546CD /* PubMedXMLParser.swift in Sources */,
+				DE69251AE48240098B310283 /* DeduplicationEngine.swift in Sources */,
+				5F32C614303D4C5FBE800F38 /* ImportManager.swift in Sources */,
+				C7160A4619794E2195CCF175 /* ScreeningView.swift in Sources */,
+				E8849EF11F9B4CD8985D3886 /* ScreeningViewModel.swift in Sources */,
+				203AE93EF3934210810D337F /* ConflictResolutionView.swift in Sources */,
+				27D6367156EC4FAEBBA479FC /* AIAssistant.swift in Sources */,
+				C4437FAE9FD84B00963F8714 /* PRISMAFlowView.swift in Sources */,
+				9107EA8657D04984939C7AFF /* NetworkGeometryView.swift in Sources */,
+				31B2F9590B0B44159F44A184 /* MergeWorkspaceView.swift in Sources */,
+				F60ECF3A50B84077BB93137A /* StudyListView.swift in Sources */,
+				8B46BBD486C548E09A65AD24 /* StudyDetailView.swift in Sources */,
+				742EA01EE5F74443A50B732F /* ProjectSettingsViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B0000000000000000000AAEE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DB99A0E0C6D452586D36A51 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B0000000000000000000AAFF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		B0000000000000000000AACC /* NMAStreamline */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0000000000000000000AB04 /* Build configuration list for PBXNativeTarget "NMAStreamline" */;
+			buildPhases = (
+				B0000000000000000000AADD /* Sources */,
+				B0000000000000000000AAEE /* Resources */,
+				B0000000000000000000AAFF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NMAStreamline;
+			productName = NMAStreamline;
+			productReference = B0000000000000000000AC02 /* NMAStreamline.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B0000000000000000000AABB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					B0000000000000000000AACC = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = B0000000000000000000AB03 /* Build configuration list for PBXProject "NMAStreamline" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B0000000000000000000AC00;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0000000000000000000AACC /* NMAStreamline */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		B0000000000000000000AB01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSET_CATALOG_COMPILER_OPTIMIZATION = time;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_DECL = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B0000000000000000000AB02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSET_CATALOG_COMPILER_OPTIMIZATION = space;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_DECL = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		B0000000000000000000AB05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSTMETADATA_ENABLE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = NMAStreamline/Info.plist;
+				LE_SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nma.NMAStreamline;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B0000000000000000000AB06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSTMETADATA_ENABLE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = NMAStreamline/Info.plist;
+				LE_SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nma.NMAStreamline;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B0000000000000000000AB03 /* Build configuration list for PBXProject "NMAStreamline" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0000000000000000000AB01 /* Debug */,
+				B0000000000000000000AB02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0000000000000000000AB04 /* Build configuration list for PBXNativeTarget "NMAStreamline" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0000000000000000000AB05 /* Debug */,
+				B0000000000000000000AB06 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B0000000000000000000AABB /* Project object */;
+}
