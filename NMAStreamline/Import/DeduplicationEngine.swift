@@ -1,7 +1,10 @@
 import Foundation
 
 /// Result of deduplication analysis on a pair of citations.
-struct DuplicateMatch {
+struct DuplicateMatch: Identifiable {
+    /// Stable identity for use in SwiftUI views (e.g. `sheet(item:)`).
+    let id: UUID = UUID()
+
     enum MatchType: String {
         case exactDOI    = "Exact DOI"
         case exactPMID   = "Exact PMID"

@@ -143,3 +143,13 @@ final class PubMedXMLParser: NSObject, XMLParserDelegate {
         abstractTexts   = []
     }
 }
+
+// MARK: - CitationParser conformance
+
+extension PubMedXMLParser: CitationParser {
+    var supportedExtensions: [String] { ["xml"] }
+
+    func parse(data: Data) -> [Citation] {
+        PubMedXMLParser.parse(data)
+    }
+}

@@ -14,6 +14,15 @@ final class ImportManager: ObservableObject {
 
     private let deduplicationEngine = DeduplicationEngine()
 
+    /// Registered parsers, consulted in order when selecting a parser for a
+    /// given file extension.  Add new `CitationParser` conformances here to
+    /// support additional formats without modifying `importFile`.
+    private let parsers: [any CitationParser] = [
+        RISParser(),
+        BibParser(),
+        PubMedXMLParser(),
+    ]
+
     // MARK: - Public API
 
     /// Import a file at the given URL into the project.
@@ -22,25 +31,13 @@ final class ImportManager: ObservableObject {
         importProgress = 0
         defer { isImporting = false }
 
-        let citations: [Citation]
-
         let ext = url.pathExtension.lowercased()
-        switch ext {
-        case "ris":
-            let content = try String(contentsOf: url, encoding: .utf8)
-            citations = RISParser.parse(content)
-
-        case "bib":
-            let content = try String(contentsOf: url, encoding: .utf8)
-            citations = BibParser.parse(content)
-
-        case "xml":
-            let data = try Data(contentsOf: url)
-            citations = PubMedXMLParser.parse(data)
-
-        default:
+        guard let parser = parsers.first(where: { $0.supportedExtensions.contains(ext) }) else {
             throw ImportError.unsupportedFormat(ext)
         }
+
+        let data = try Data(contentsOf: url)
+        let citations = parser.parse(data: data)
 
         importProgress = 0.3
 

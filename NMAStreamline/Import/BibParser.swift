@@ -32,7 +32,7 @@ struct BibParser {
         // Extract entry type and key
         let headerPattern = #"@(\w+)\s*\{([^,]+),"#
         guard let headerRegex = try? NSRegularExpression(pattern: headerPattern),
-              let headerMatch = headerRegex.firstMatch(in: block, range: NSRange(block.startIndex..., in: block))
+              headerRegex.firstMatch(in: block, range: NSRange(block.startIndex..., in: block)) != nil
         else { return nil }
 
         // Extract all field = {value} or field = "value" pairs
@@ -111,5 +111,16 @@ struct BibParser {
     private static func cleanBrackets(_ s: String) -> String {
         s.replacingOccurrences(of: "{", with: "")
          .replacingOccurrences(of: "}", with: "")
+    }
+}
+
+// MARK: - CitationParser conformance
+
+extension BibParser: CitationParser {
+    var supportedExtensions: [String] { ["bib"] }
+
+    func parse(data: Data) -> [Citation] {
+        let content = String(data: data, encoding: .utf8) ?? ""
+        return BibParser.parse(content)
     }
 }
