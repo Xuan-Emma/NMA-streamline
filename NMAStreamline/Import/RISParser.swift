@@ -1,8 +1,48 @@
 import Foundation
 
 /// Parses RIS (Research Information Systems) formatted bibliography files.
-/// Spec: https://en.wikipedia.org/wiki/RIS_(file_format)
+/// Supports three citation formats:
+///   - Standard RIS (e.g. `TI  - Some Title`)
+///   - EndNote Tagged (e.g. `%T Some Title`)
+///   - Embase/Scopus RIS with non-standard tags (e.g. `T1  - Some Title`, `N2  - Abstract`)
 struct RISParser {
+
+    // Matches tag lines from all three supported formats.
+    // Capture groups:
+    //   1 – character(s) after `%` for EndNote-style tags  (e.g. `T` in `%T Some Title`)
+    //   2 – tag name for RIS/Embase-style tags              (e.g. `TI` in `TI  - Some Title`)
+    //   3 – the field value that follows the tag
+    private static let tagRegex = try! NSRegularExpression(
+        pattern: #"^(?:%([A-Z0-9@%]{1,2})\s+|([A-Z0-9]{2,4})\s*-\s*)(.*)$"#
+    )
+
+    /// Maps variant tags from all supported formats to a single canonical internal key,
+    /// so that buildCitation only needs to look up one key per field.
+    private static let tagNormalizationMap: [String: String] = [
+        // Title variants
+        "%T": "TI", "T1": "TI", "CT": "TI", "BT": "TI",
+        // Author variants
+        "%A": "AU", "A1": "AU",
+        // Year variants
+        "%D": "PY", "Y1": "PY",
+        // Journal variants
+        "%J": "JO", "T2": "JO", "JF": "JO",
+        // Abstract variants
+        "%X": "AB", "N2": "AB",
+        // Volume variants
+        "%V": "VL",
+        // Issue variants
+        "%N": "IS",
+        // DOI variants (DI is used by Web of Science / Embase exports)
+        "DI": "DO",
+        // Source/DB provider tag
+        "DP": "DB",
+        // Record-type tag: %0 (EndNote) normalised alongside TY (RIS)
+        "%0": "TY",
+    ]
+
+    // ClinicalTrials.gov identifiers are always "NCT" followed by exactly 8 digits.
+    private static let nctIDRegex = try! NSRegularExpression(pattern: #"NCT\d{8}"#)
 
     /// Parse RIS content string into an array of Citation objects.
     static func parse(_ content: String) -> [Citation] {
@@ -10,37 +50,61 @@ struct RISParser {
         let lines = content.components(separatedBy: .newlines)
 
         var currentRecord: [String: [String]] = [:]
+        var lastTag: String? = nil
 
         for rawLine in lines {
             let line = rawLine.trimmingCharacters(in: .whitespaces)
 
-            if line == "ER  -" || line == "ER  - " {
-                // End of record
-                if let citation = buildCitation(from: currentRecord) {
+            // End-of-record marker
+            if line.hasPrefix("ER  -") || line == "ER" {
+                if !currentRecord.isEmpty, let citation = buildCitation(from: currentRecord) {
                     citations.append(citation)
                 }
                 currentRecord = [:]
+                lastTag = nil
                 continue
             }
 
-            // RIS format: "TY  - Journal Article"
-            guard line.count >= 6,
-                  line[line.index(line.startIndex, offsetBy: 2)...line.index(line.startIndex, offsetBy: 3)] == "  ",
-                  line[line.index(line.startIndex, offsetBy: 4)...line.index(line.startIndex, offsetBy: 5)] == "- "
-            else {
-                // Continuation of previous field (some RIS files wrap long values)
-                continue
-            }
+            // Try to match a tag line
+            let nsRange = NSRange(line.startIndex..., in: line)
+            if let match = tagRegex.firstMatch(in: line, range: nsRange) {
+                // Group 1: character(s) after `%` in EndNote style
+                // Group 2: tag name in RIS style
+                // Group 3: value
+                let endnoteTag: String? = Range(match.range(at: 1), in: line).map { "%" + line[$0] }
+                let risTag: String?     = Range(match.range(at: 2), in: line).map { String(line[$0]) }
+                let value: String       = Range(match.range(at: 3), in: line)
+                    .map { String(line[$0]).trimmingCharacters(in: .whitespaces) } ?? ""
 
-            let tag = String(line.prefix(2))
-            let value = String(line.dropFirst(6)).trimmingCharacters(in: .whitespaces)
+                let rawTag = endnoteTag ?? risTag ?? ""
+                let canonicalTag = tagNormalizationMap[rawTag] ?? rawTag
 
-            if !value.isEmpty {
-                currentRecord[tag, default: []].append(value)
+                // TY (standard RIS) and %0 (EndNote) both normalise to "TY" and mark the
+                // start of a new record. Flush any prior accumulated data before resetting.
+                if canonicalTag == "TY" && !currentRecord.isEmpty {
+                    if let citation = buildCitation(from: currentRecord) {
+                        citations.append(citation)
+                    }
+                    currentRecord = [:]
+                    lastTag = nil
+                }
+
+                if !value.isEmpty {
+                    currentRecord[canonicalTag, default: []].append(value)
+                }
+                lastTag = canonicalTag
+
+            } else if !line.isEmpty, let tag = lastTag {
+                // Multi-line continuation (common in Embase long abstracts):
+                // append the line content to the last value of the current tag.
+                if var values = currentRecord[tag], !values.isEmpty {
+                    values[values.count - 1] += " " + line
+                    currentRecord[tag] = values
+                }
             }
         }
 
-        // Flush last record if ER was missing
+        // Flush last record if ER  - was missing
         if !currentRecord.isEmpty, let citation = buildCitation(from: currentRecord) {
             citations.append(citation)
         }
@@ -51,33 +115,47 @@ struct RISParser {
     // MARK: - Private
 
     private static func buildCitation(from record: [String: [String]]) -> Citation? {
-        // Must have at least a title
-        guard let titleValues = record["TI"] ?? record["T1"],
+        // Must have at least a title (all title variants normalised to "TI")
+        guard let titleValues = record["TI"],
               let title = titleValues.first, !title.isEmpty
         else { return nil }
 
-        let abstract = (record["AB"] ?? record["N2"])?.joined(separator: " ") ?? ""
+        // Abstract (all variants normalised to "AB")
+        let abstract = record["AB"]?.joined(separator: " ") ?? ""
 
-        // Authors: AU or A1 tags
-        let authorRaw = (record["AU"] ?? record["A1"]) ?? []
-        let authors = authorRaw.map { normalizeAuthor($0) }
+        // Authors (all variants normalised to "AU")
+        let authors = (record["AU"] ?? []).map { normalizeAuthor($0) }
 
-        // Year from PY, Y1, or DA
-        let yearString = (record["PY"] ?? record["Y1"] ?? record["DA"])?.first ?? ""
+        // Year (all variants normalised to "PY")
+        let yearString = (record["PY"] ?? record["DA"])?.first ?? ""
         let year = Int(yearString.prefix(4))
 
-        let journal = (record["JO"] ?? record["JF"] ?? record["T2"] ?? record["SO"])?.first ?? ""
-        let volume  = record["VL"]?.first ?? ""
-        let issue   = record["IS"]?.first ?? ""
+        // Journal (all variants normalised to "JO")
+        let journal = (record["JO"] ?? record["SO"])?.first ?? ""
 
-        let doi  = record["DO"]?.first?.trimmingCharacters(in: .whitespaces)
+        let volume = record["VL"]?.first ?? ""
+        let issue  = record["IS"]?.first ?? ""
+
+        // DOI: standard DO plus DI (normalised to DO above)
+        let doi = record["DO"]?.first?.trimmingCharacters(in: .whitespaces)
+
+        // PMID: from AN tag
         let pmid = record["AN"]?.first?.trimmingCharacters(in: .whitespaces)
 
-        // Source database from DB or DP tag
-        let dbString = (record["DB"] ?? record["DP"])?.first?.lowercased() ?? ""
+        // NCT ID: search the N1 notes field for a ClinicalTrials.gov identifier
+        // (ClinicalTrials.gov identifiers are always "NCT" followed by exactly 8 digits)
+        let nctID: String? = {
+            let notes = (record["N1"] ?? []).joined(separator: " ")
+            let nsNotes = notes as NSString
+            let match = nctIDRegex.firstMatch(in: notes, range: NSRange(location: 0, length: nsNotes.length))
+            return match.flatMap { Range($0.range, in: notes).map { String(notes[$0]) } }
+        }()
+
+        // Source database from DB tag (DP normalised to DB above)
+        let dbString = record["DB"]?.first?.lowercased() ?? ""
         let source = citationSource(from: dbString)
 
-        // Build the pages string from start/end page tags
+        // Pages from SP/EP tags
         let pages: String = {
             if let sp = record["SP"]?.first, let ep = record["EP"]?.first {
                 return "\(sp)-\(ep)"
@@ -93,7 +171,8 @@ struct RISParser {
             journal: journal,
             source: source,
             doi: doi,
-            pmid: pmid
+            pmid: pmid,
+            nctID: nctID
         )
         citation.volume = volume
         citation.issue = issue

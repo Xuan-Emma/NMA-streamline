@@ -64,6 +64,133 @@ final class RISParserTests: XCTestCase {
         let citations = RISParser.parse(ris)
         XCTAssertTrue(citations.isEmpty)
     }
+
+    // MARK: EndNote Tagged format (%T, %A, %D, %J, %X)
+
+    func testParsesEndNoteTaggedFormat() {
+        let ris = """
+        %0 Journal Article
+        %T Cognitive Therapy for Depression
+        %A Jones, Alice
+        %A Brown, Bob
+        %D 2019
+        %J Psychological Medicine
+        %V 49
+        %N 3
+        %X This study evaluated cognitive therapy outcomes.
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 1)
+        let c = citations[0]
+        XCTAssertEqual(c.title, "Cognitive Therapy for Depression")
+        XCTAssertEqual(c.authors.count, 2)
+        XCTAssertEqual(c.year, 2019)
+        XCTAssertEqual(c.journal, "Psychological Medicine")
+        XCTAssertEqual(c.volume, "49")
+        XCTAssertEqual(c.issue, "3")
+        XCTAssertTrue(c.abstract.contains("cognitive therapy"))
+    }
+
+    // MARK: Embase/Scopus RIS format (T1, N2, non-standard tags)
+
+    func testParsesEmbaseScopusRISFormat() {
+        let ris = """
+        TY  - JOUR
+        T1  - Antidepressant Efficacy in Treatment-Resistant Depression
+        AU  - Garcia, Maria
+        PY  - 2023
+        T2  - Journal of Affective Disorders
+        VL  - 310
+        IS  - 1
+        N2  - Background: Treatment-resistant depression remains challenging.
+        DO  - 10.1016/j.jad.2023.001
+        AN  - 36789012
+        ER  -
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 1)
+        let c = citations[0]
+        XCTAssertEqual(c.title, "Antidepressant Efficacy in Treatment-Resistant Depression")
+        XCTAssertEqual(c.journal, "Journal of Affective Disorders")
+        XCTAssertEqual(c.volume, "310")
+        XCTAssertEqual(c.issue, "1")
+        XCTAssertTrue(c.abstract.contains("Treatment-resistant"))
+        XCTAssertEqual(c.doi, "10.1016/j.jad.2023.001")
+        XCTAssertEqual(c.pmid, "36789012")
+    }
+
+    // MARK: DI tag normalization (Web of Science / Embase DOI variant)
+
+    func testDITagNormalizedAsDOI() {
+        let ris = """
+        TY  - JOUR
+        TI  - WoS Export Study
+        AU  - Lee, Chris
+        PY  - 2021
+        DI  - 10.9999/wos.2021.555
+        ER  -
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 1)
+        XCTAssertEqual(citations[0].doi, "10.9999/wos.2021.555")
+    }
+
+    // MARK: Multi-line abstract continuation
+
+    func testMultiLineAbstractAppended() {
+        let ris = """
+        TY  - JOUR
+        TI  - Long Abstract Study
+        AU  - Patel, Raj
+        PY  - 2020
+        AB  - First line of abstract.
+        Second line continues here.
+        Third line ends the abstract.
+        ER  -
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 1)
+        let abstract = citations[0].abstract
+        XCTAssertTrue(abstract.contains("First line"))
+        XCTAssertTrue(abstract.contains("Second line"))
+        XCTAssertTrue(abstract.contains("Third line"))
+    }
+
+    // MARK: NCT ID extraction from N1 notes field
+
+    func testNCTIDExtractedFromN1Field() {
+        let ris = """
+        TY  - JOUR
+        TI  - Clinical Trial of Intervention X
+        AU  - Wilson, Kate
+        PY  - 2022
+        N1  - ClinicalTrials.gov identifier: NCT01234567
+        ER  -
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 1)
+        XCTAssertEqual(citations[0].nctID, "NCT01234567")
+    }
+
+    // MARK: New TY  - line flushes prior record (missing ER  -)
+
+    func testNewTYLineFlushesImplicitRecord() {
+        let ris = """
+        TY  - JOUR
+        TI  - First Study Without ER
+        AU  - Alpha, A
+        PY  - 2018
+        TY  - JOUR
+        TI  - Second Study
+        AU  - Beta, B
+        PY  - 2019
+        ER  -
+        """
+        let citations = RISParser.parse(ris)
+        XCTAssertEqual(citations.count, 2)
+        XCTAssertEqual(citations[0].title, "First Study Without ER")
+        XCTAssertEqual(citations[1].title, "Second Study")
+    }
 }
 
 // MARK: - BibTeX Parser Tests
