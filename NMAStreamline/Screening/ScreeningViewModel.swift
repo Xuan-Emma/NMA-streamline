@@ -215,9 +215,12 @@ final class ScreeningViewModel: ObservableObject {
             return (study.id, study.primaryCitation ?? Citation(title: study.title))
         }
 
+        // Snapshot ai to avoid accessing a @MainActor-isolated property
+        // from inside a Task.detached (Swift 6 strict concurrency).
+        let aiAssistant = ai
         Task.detached(priority: .background) { [weak self, pico] in
             for (id, citation) in studiesToPrefetch {
-                if let suggestion = await self?.ai.suggest(for: citation, pico: pico) {
+                if let suggestion = await aiAssistant.suggest(for: citation, pico: pico) {
                     await MainActor.run { self?.prefetchCache[id] = suggestion }
                 }
             }

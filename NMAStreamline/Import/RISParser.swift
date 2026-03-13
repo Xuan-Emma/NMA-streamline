@@ -197,3 +197,14 @@ struct RISParser {
         return .other
     }
 }
+
+// MARK: - CitationParser conformance
+
+extension RISParser: CitationParser {
+    var supportedExtensions: [String] { ["ris"] }
+
+    func parse(data: Data) -> [Citation] {
+        let content = String(data: data, encoding: .utf8) ?? ""
+        return RISParser.parse(content)
+    }
+}
