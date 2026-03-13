@@ -12,6 +12,15 @@ struct StudyDetailView: View {
     @State private var showPDFImporter = false
     @State private var exclusionReason: ExclusionReason?
 
+    // MARK: - Computed helpers
+
+    /// True when the study has any confirmed linker or AI-suggested linker outcomes.
+    /// These studies provide "network connections" across treatment comparisons and
+    /// must not be accidentally excluded even if they lack a primary outcome.
+    private var isLinkerStudy: Bool {
+        study.outcomes.contains { $0.isLinker }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             headerArea
@@ -72,13 +81,27 @@ struct StudyDetailView: View {
 
             Spacer()
 
-            // Status badge
+            // Status badge + linker badge
             VStack(spacing: 6) {
                 statusBadge(study.status)
                 if study.hasConflict {
                     Label("Conflict", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption.bold())
                         .foregroundStyle(.orange)
+                }
+                if isLinkerStudy {
+                    Label("Network Linker", systemImage: "link.badge.plus")
+                        .font(.caption.bold())
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(.orange.opacity(0.15))
+                        .foregroundStyle(.orange)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(.orange.opacity(0.4), lineWidth: 1)
+                        )
+                        .help("This study provides network connections for indirect comparisons. Review carefully before excluding.")
                 }
             }
         }
@@ -195,7 +218,8 @@ struct StudyDetailView: View {
     private func outcomeRow(_ outcome: Outcome) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 3) {
-                Text(outcome.name).font(.body)
+                Text(outcome.name)
+                    .font(outcome.type == .primary ? .body.bold() : .body)
                 if !outcome.timepoint.isEmpty {
                     Text("Timepoint: \(outcome.timepoint)").font(.caption).foregroundStyle(.secondary)
                 }
@@ -219,6 +243,21 @@ struct StudyDetailView: View {
                     .foregroundStyle(outcomeTypeColor(outcome.type))
                     .cornerRadius(4)
             }
+        }
+        // Highlight primary and secondary outcomes with a subtle background so
+        // NMA-relevant findings stand out; linker outcomes use a warm tint.
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(outcomeRowBackground(outcome.type))
+        .cornerRadius(6)
+    }
+
+    private func outcomeRowBackground(_ type: OutcomeType) -> Color {
+        switch type {
+        case .primary:   return .blue.opacity(0.06)
+        case .secondary: return .teal.opacity(0.04)
+        case .linker:    return .orange.opacity(0.06)
+        default:         return .clear
         }
     }
 

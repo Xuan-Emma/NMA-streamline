@@ -144,7 +144,7 @@ final class ScreeningViewModel: ObservableObject {
         if let dec2 = d2 {
             // Both reviewers have decided
             if dec1.decision == dec2.decision {
-                applyConsensusDecision(dec1.decision, to: study)
+                applyConsensusDecision(dec1.decision, reason: dec1.exclusionReason, to: study)
             } else {
                 // Conflict — flag for adjudication
                 conflictStudy = study
@@ -152,16 +152,20 @@ final class ScreeningViewModel: ObservableObject {
             }
         } else if reviewerIndex == 1 && !project.blindMode {
             // Single reviewer mode OR non-blind first reviewer
-            applyConsensusDecision(dec1.decision, to: study)
+            applyConsensusDecision(dec1.decision, reason: dec1.exclusionReason, to: study)
         }
     }
 
-    private func applyConsensusDecision(_ decision: ScreeningDecision, to study: Study) {
+    private func applyConsensusDecision(_ decision: ScreeningDecision, reason: ExclusionReason? = nil, to study: Study) {
         switch (decision, stage) {
         case (.include, .abstract): study.status = .includedAbstract
-        case (.exclude, .abstract): study.status = .excludedAbstract
+        case (.exclude, .abstract):
+            study.status = .excludedAbstract
+            if let reason { study.primaryExclusionReason = reason }
         case (.include, .fullText): study.status = .included
-        case (.exclude, .fullText): study.status = .excludedFullText
+        case (.exclude, .fullText):
+            study.status = .excludedFullText
+            if let reason { study.primaryExclusionReason = reason }
         case (.maybe, _): study.status = .maybe
         default: break
         }
@@ -169,9 +173,10 @@ final class ScreeningViewModel: ObservableObject {
 
     func resolveConflict(winnerIndex: Int, reason: ExclusionReason? = nil) {
         guard let study = conflictStudy else { return }
-        let winnerDecision = winnerIndex == 1 ? study.decision1?.decision : study.decision2?.decision
+        let winnerDecision = winnerIndex == 1 ? study.decision1 : study.decision2
         if let d = winnerDecision {
-            applyConsensusDecision(d, to: study)
+            // Use the explicitly supplied reason; fall back to the winning reviewer's reason.
+            applyConsensusDecision(d.decision, reason: reason ?? d.exclusionReason, to: study)
         }
         try? context.save()
         showConflictResolution = false
@@ -194,10 +199,24 @@ final class ScreeningViewModel: ObservableObject {
         }
 
         isLoadingAI = true
-        Task {
-            let suggestion = await ai.suggest(for: study.primaryCitation ?? Citation(title: study.title), pico: pico)
-            currentAISuggestion = suggestion
-            isLoadingAI = false
+        // Capture PersistentIdentifier (Sendable) and UUID instead of the model
+        // object so that Swift 6 isolation rules are satisfied.
+        let persistentID = study.persistentModelID
+        let studyUUID    = study.id
+        Task { [weak self] in
+            guard let self else { return }
+            // Re-fetch the model inside the task from the main-actor context.
+            guard let fetchedStudy = try? self.context.model(for: persistentID) as? Study else {
+                self.isLoadingAI = false
+                return
+            }
+            let citation   = fetchedStudy.primaryCitation ?? Citation(title: fetchedStudy.title)
+            let suggestion = await self.ai.suggest(for: citation, pico: pico)
+            // Only apply if the queue has not moved on since we started.
+            if self.currentStudy?.id == studyUUID {
+                self.currentAISuggestion = suggestion
+            }
+            self.isLoadingAI = false
         }
     }
 
@@ -207,21 +226,29 @@ final class ScreeningViewModel: ObservableObject {
         let end = min(start + prefetchAhead, queue.count)
         guard start < end else { return }
 
-        // Snapshot the studies to prefetch so the detached task doesn't
-        // capture a reference to the mutable queue array on MainActor.
-        let studiesToPrefetch: [(UUID, Citation)] = (start..<end).compactMap { idx in
-            let study = queue[idx]
-            guard prefetchCache[study.id] == nil else { return nil }
-            return (study.id, study.primaryCitation ?? Citation(title: study.title))
-        }
+        // Capture Sendable value types (UUID + Strings) instead of @Model objects
+        // to comply with Swift 6 strict-concurrency requirements.
+        let studiesToPrefetch: [(id: UUID, title: String, abstract: String)] =
+            (start..<end).compactMap { idx in
+                let study = queue[idx]
+                guard prefetchCache[study.id] == nil else { return nil }
+                let citation = study.primaryCitation
+                return (study.id,
+                        citation?.title ?? study.title,
+                        citation?.abstract ?? "")
+            }
+
+        guard !studiesToPrefetch.isEmpty else { return }
 
         // Snapshot ai to avoid accessing a @MainActor-isolated property
         // from inside a Task.detached (Swift 6 strict concurrency).
         let aiAssistant = ai
         Task.detached(priority: .background) { [weak self, pico] in
-            for (id, citation) in studiesToPrefetch {
-                if let suggestion = await aiAssistant.suggest(for: citation, pico: pico) {
-                    await MainActor.run { self?.prefetchCache[id] = suggestion }
+            for item in studiesToPrefetch {
+                // Build a lightweight, non-persisted citation for the AI.
+                let tempCitation = Citation(title: item.title, abstract: item.abstract)
+                if let suggestion = await aiAssistant.suggest(for: tempCitation, pico: pico) {
+                    await MainActor.run { self?.prefetchCache[item.id] = suggestion }
                 }
             }
         }

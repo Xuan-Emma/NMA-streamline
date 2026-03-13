@@ -20,6 +20,12 @@ final class Outcome {
     // Whether the user confirmed it as a linker
     var isConfirmedLinker: Bool
 
+    /// Convenience: true when the outcome is a network linker by any means
+    /// (explicit type, user-confirmed, or AI-suggested).
+    var isLinker: Bool {
+        type == .linker || isConfirmedLinker || isAILinkerSuggestion
+    }
+
     init(
         name: String,
         type: OutcomeType = .secondary,

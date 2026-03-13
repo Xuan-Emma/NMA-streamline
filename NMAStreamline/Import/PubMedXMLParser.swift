@@ -19,11 +19,15 @@ final class PubMedXMLParser: NSObject, XMLParserDelegate {
     private var currentNCT: String?
 
     // XML parsing state
-    private var currentElement  = ""
-    private var currentLastName = ""
-    private var currentForeName = ""
-    private var insideAbstract  = false
+    private var currentElement         = ""
+    private var currentLastName        = ""
+    private var currentForeName        = ""
+    private var insideAbstract         = false
     private var abstractTexts: [String] = []
+    /// Accumulates character data for the current AbstractText section.
+    /// XMLParser may invoke foundCharacters multiple times per element;
+    /// we buffer here and flush on didEndElement to avoid truncated abstracts.
+    private var currentAbstractSection = ""
 
     // MARK: - Public API
 
@@ -58,9 +62,15 @@ final class PubMedXMLParser: NSObject, XMLParserDelegate {
 
         switch currentElement {
         case "ArticleTitle":
-            currentTitle += trimmed
+            // Use space-aware concatenation in case XMLParser splits the text
+            // of one element across multiple foundCharacters calls.
+            currentTitle = currentTitle.isEmpty ? trimmed : currentTitle + " " + trimmed
         case "AbstractText":
-            abstractTexts.append(trimmed)
+            // Accumulate into a section buffer; flushed to abstractTexts on
+            // didEndElement so that multi-call splits don't create extra entries.
+            currentAbstractSection = currentAbstractSection.isEmpty
+                ? trimmed
+                : currentAbstractSection + " " + trimmed
         case "LastName":
             currentLastName += trimmed
         case "ForeName", "Initials":
@@ -98,6 +108,11 @@ final class PubMedXMLParser: NSObject, XMLParserDelegate {
             currentForeName = ""
 
         case "AbstractText":
+            // Flush the accumulated section text into the abstract parts array.
+            if !currentAbstractSection.isEmpty {
+                abstractTexts.append(currentAbstractSection)
+                currentAbstractSection = ""
+            }
             insideAbstract = false
 
         case "PubmedArticle":
@@ -127,20 +142,21 @@ final class PubMedXMLParser: NSObject, XMLParserDelegate {
     // MARK: - Private
 
     private func resetCurrentRecord() {
-        currentTitle    = ""
-        currentAbstract = ""
-        currentAuthors  = []
-        currentYear     = nil
-        currentJournal  = ""
-        currentVolume   = ""
-        currentIssue    = ""
-        currentPages    = ""
-        currentDOI      = nil
-        currentPMID     = nil
-        currentNCT      = nil
-        currentLastName = ""
-        currentForeName = ""
-        abstractTexts   = []
+        currentTitle          = ""
+        currentAbstract       = ""
+        currentAuthors        = []
+        currentYear           = nil
+        currentJournal        = ""
+        currentVolume         = ""
+        currentIssue          = ""
+        currentPages          = ""
+        currentDOI            = nil
+        currentPMID           = nil
+        currentNCT            = nil
+        currentLastName       = ""
+        currentForeName       = ""
+        abstractTexts         = []
+        currentAbstractSection = ""
     }
 }
 
